@@ -1,0 +1,15 @@
+{% load crispy_forms_tags %}
+<form method="post">
+    {% csrf_token %}
+    <legend class="form-label">
+        <h3>{{label}}</h3>
+        <small>{{description}}</small>
+        <hr>
+    </legend>
+    <div class="form-floating">
+        {{form|crispy}}
+    </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+        <button class="btn btn-outline-primary">{{btn}}</button>
+    </div>
+</form>

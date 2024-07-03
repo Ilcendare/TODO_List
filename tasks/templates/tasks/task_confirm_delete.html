@@ -1,0 +1,19 @@
+{% extends "base/base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-6">
+        <form method="post">
+            {% csrf_token %}
+            <legend class="form-label">
+                <h3>Delete Task</h3>
+                <small>Are you sure you want to delete {{object.title}}?</small>
+                <hr>
+            </legend>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <button class="btn btn-outline-danger">Yes, I'm sure</button>
+                <a class="btn btn-outline-primary" href="{% url 'home-page' %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
