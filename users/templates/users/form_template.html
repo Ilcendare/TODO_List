@@ -11,5 +11,8 @@
     </div>
     <div class="d-grid gap-2 d-md-flex justify-content-md-center">
         <button class="btn btn-outline-primary">{{btn}}</button>
+        {% if form_type == 'edit' %}
+            <a class="btn btn-outline-danger" href="{{request.META.HTTP_REFERER}}">Cancel</a>
+        {% endif %}
     </div>
 </form>

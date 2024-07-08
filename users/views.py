@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from .forms import UserRegisterationForm
 from django.contrib import messages
-
+from django.views.generic import DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from tasks.models import Task
 
 def register(request):
     if request.method == 'POST':
@@ -26,4 +28,18 @@ def LogoutUser(request):
 
 
 def user_profile(request):
-    return render(request, 'users/profile.html')
+    tasks = Task.objects.filter(owner=request.user)
+    context = {'tasks': tasks}
+    return render(request, 'users/profile.html', context)
+
+
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = User
+    template_name = 'users/user_confirm_delete.html'
+    success_url = '/'
+    
+    def test_func(self):
+        user = self.get_object()
+        if self.request.user == user:
+            return True
+        return False

@@ -1,19 +1,28 @@
 from django.shortcuts import render
 from tasks.models import Task
 from django.views.generic import ListView
+from django.db.models import Q
 
-
-# *function based view
+#* Function Based View
 # def home_page(request):
 #     tasks = Task.objects.filter(owner=request.user)
 #     context = {'tasks':tasks}
 #     return render(request, 'base/home.html', context)
 
 
-# *class based view
+#* Class Based View
 class TaskListView(ListView):
     model = Task
-    context_object_name = 'tasks'
     template_name = 'base/home.html'
     ordering = ['date_created']
     paginate_by = 10
+
+    #* To get/filter all specific user's tasks
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if not self.request.user.is_authenticated:
+            context['tasks'] = None
+            return context
+        tasks = Task.objects.filter(Q(owner=self.request.user) & Q(completed=False))
+        context['tasks'] = tasks
+        return context
