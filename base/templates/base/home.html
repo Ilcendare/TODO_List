@@ -1,16 +1,24 @@
 {% extends "base/base.html" %}
 {% block content %}
     {% if user.is_authenticated == True  %}
-        <div class="row mt-3 mb-4 justify-content-center text-center">
-            <div class="col-7 me-5">
+        <div class="row">
+            <div class="col input-group mb-5 mt-4">
+                <form class="input-group d-flex justify-content-center" action="{% url 'home-page' %}" method="get">
+                        <span class="input-group-text" id="basic-addon1">Task title:</span>
+                        <input type="text" class="form-control" style="max-width: 500px;" placeholder="Type the task title you are searching" aria-label="task-title" aria-describedby="basic-addon1" name="query">
+                </form>
+            </div>
+        </div>
+        <div class="row mt-3 mb-4 justify-content-center text-center nowrap">
+            <div class="col-7 me-md-5">
                 <h2>On-going Tasks</h2>
             </div>
             <div class="col-4">
                 <h2>Tasks Details</h2>
             </div>
         </div>
-        <div class="row justify-content-center" role="tabpanel">
-            <div class="col-7 me-5">
+        <div class="row justify-content-center nowrap" role="tabpanel">
+            <div class="col-7 me-md-5">
                 <div class="list-group" id="myList" role="tablist">
                     {% for task in tasks %}
                     <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#{{task.id}}" role="tab">{{task.title}}</a>
@@ -39,10 +47,10 @@
                                 </div>
                             </div>
                             <div class="row justify-content-center mt-auto mb-4">
-                                <div class="col d-flex justify-content-center">
-                                    <a class="btn btn-outline-success me-2" href="{% url 'mark-complete' task.id %}">Completed</a>
-                                    <a class="btn btn-info ms-2 me-2" href="{% url 'edit-task' task.id task.title %}?next={{request.path}}">Edit Task</a>
-                                    <a class="btn btn-danger ms-2" href="{% url 'delete-task' task.id task.title %}?next={{request.path}}">Delete Task</a>
+                                <div class="col d-flex justify-content-md-center align-content-sm-center flex-wrap flex-sm-column flex-md-row">
+                                    <a class="btn btn-success mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'mark-complete' task.id %}">Check</a>
+                                    <a class="btn btn-info mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'edit-task' task.id task.title %}?next={{request.path}}">Edit</a>
+                                    <a class="btn btn-danger mb-sm-2" style="max-width: 100px; width: 100px;" href="{% url 'delete-task' task.id task.title %}?next={{request.path}}">Delete</a>
                                 </div>
                             </div>
                         </div>

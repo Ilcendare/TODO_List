@@ -23,6 +23,9 @@ class TaskListView(ListView):
         if not self.request.user.is_authenticated:
             context['tasks'] = None
             return context
-        tasks = Task.objects.filter(Q(owner=self.request.user) & Q(completed=False))
+        query = self.request.GET.get('query') if self.request.GET.get('query') is not None else ''
+        tasks = Task.objects.filter(Q(owner=self.request.user) & 
+                                    Q(completed=False) & 
+                                    Q(title__icontains = query))
         context['tasks'] = tasks
         return context
