@@ -1,0 +1,17 @@
+Total number of tasks: 12
+Completed tasks
+ID                        ,Title                                 ,Create at  ,Description
+52                        ,Finish Checkbox                       ,2024/07/07 ,"Add a finish checkbox to each task, then make it disappear from the home page."
+63                        ,Fix the pagination problem            ,2024/07/11 ,Do the pagination manually.
+65                        ,Try different databases               ,2024/07/12 ,Try to use different databases and learn about them
+On-going tasks
+ID                        ,Title                                 ,Create at  ,Description
+21                        ,Tasks Queries                         ,2024/06/29 ,"Add all task query features to the user's profile.Queries should include a search by name, by date created (most recent or oldest tasks), and by finished attribute (True or False)."
+51                        ,Email verification and Reset Password ,2024/07/07 ,Make sure that sending emails is working properly on this website.
+58                        ,OAuth2                                ,2024/07/10 ,Learn about OAuth2 and add it to the website.
+59                        ,Export Report                         ,2024/07/10 ,"Add the option of exporting a report on tasks.The report includes the number of all tasks and the number of finished and unfinished tasks."
+60                        ,Fix the responsive view issues        ,2024/07/10 ,"Fix the navbar, the profile elements, and the tasks panel."
+61                        ,AJAX                                  ,2024/07/11 ,Learn how to use AJAX for file handling.
+62                        ,APIs                                  ,2024/07/11 ,Lear how to use APIs for that website.
+66                        ,deploy the website                    ,2024/07/12 ,Learn how to deploy the website using apache and Heroku
+67                        ,Clouds                                ,2024/07/12 ,Learn about clouds

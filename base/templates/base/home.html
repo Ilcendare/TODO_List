@@ -6,6 +6,7 @@
                 <form class="input-group d-flex justify-content-center" action="{% url 'home-page' %}" method="get">
                         <span class="input-group-text" id="basic-addon1">Task title:</span>
                         <input type="text" class="form-control" style="max-width: 500px;" placeholder="Type the task title you are searching" aria-label="task-title" aria-describedby="basic-addon1" name="query">
+                        <!-- TODO Add 'Order by' option to order tasks from oldest to newest or vice versa, or by title -->
                 </form>
             </div>
         </div>
@@ -26,11 +27,11 @@
                 </div>
                 {% if is_paginated %}
                     <div class="d-flex justify-content-evenly mt-3">
-                        {% if page_obj.has_previous %}
-                            <a class="btn btn-outline-primary bi bi-caret-left-fill" href="?page={{page_obj.previous_page_number}}"></a>
+                        {% if tasks.has_previous %}
+                            <a class="btn btn-outline-primary bi bi-caret-left-fill" href="?page={{tasks.previous_page_number}}"></a>
                         {% endif %}
-                        {% if page_obj.has_next %}
-                            <a class="btn btn-outline-primary bi bi-caret-right-fill" href="?page={{page_obj.next_page_number}}"></a>
+                        {% if tasks.has_next %}
+                            <a class="btn btn-outline-primary bi bi-caret-right-fill" href="?page={{tasks.next_page_number}}"></a>
                         {% endif %}
                     </div>
                 {% endif %}

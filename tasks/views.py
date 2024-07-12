@@ -1,8 +1,12 @@
+from os import write
+from timeit import repeat
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Task
+from django.db.models import Q
+import csv
 
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
@@ -49,18 +53,39 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return success_url
 
 
-def markTaskAsCompleted(request, pk):
+def checkTask(request, pk):
     task = Task.objects.get(id=pk)
     task.completed = True
     task.save()
-    # return redirect('home-page')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-
-def unmarkTask(request, pk):
+def uncheckTask(request, pk):
     task = Task.objects.get(id=pk)
     task.completed = False
     task.save()
-    # return redirect('user-profile')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def exportReport(request):
+    tasks = Task.objects.filter(owner=request.user)
+    with open('file.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([f"Total number of tasks: {tasks.count()}"])
+        
+        writer.writerow(['Completed tasks'])
+        tasks = Task.objects.filter(Q(owner=request.user) & Q(completed=True))
+        writer.writerow(['ID', 'Title', 'Create at', 'Description'])
+        for task in tasks:
+            writer.writerow([task.pk, task.title, 
+                            task.date_created.date().isoformat().replace('-','/'), 
+                            task.description])
+
+        writer.writerow(['On-going tasks'])
+        tasks = Task.objects.filter(Q(owner=request.user) & Q(completed=False))
+        writer.writerow(['ID', 'Title', 'Create at', 'Description'])
+        for task in tasks:
+            writer.writerow([task.pk, task.title, 
+                            task.date_created.date().isoformat().replace('-','/'), 
+                            task.description])
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

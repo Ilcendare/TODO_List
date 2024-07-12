@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.views.generic import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from tasks.models import Task
+from django.core.paginator import Paginator
 
 def register(request):
     if request.method == 'POST':
@@ -29,7 +30,10 @@ def LogoutUser(request):
 
 def user_profile(request):
     tasks = Task.objects.filter(owner=request.user)
-    context = {'tasks': tasks}
+    paginated = Paginator(tasks, 10)
+    page_number = request.GET.get('page') #Get the requested page number from the URL
+    page = paginated.get_page(page_number)
+    context = {'tasks': page, 'is_paginated': True}
     return render(request, 'users/profile.html', context)
 
 
