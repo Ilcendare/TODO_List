@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
-from .forms import UserRegisterationForm
+from .forms import UserRegisterationForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
 from django.views.generic import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -35,6 +35,22 @@ def user_profile(request):
     page = paginated.get_page(page_number)
     context = {'tasks': page, 'is_paginated': True}
     return render(request, 'users/profile.html', context)
+
+
+def user_profile_update(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST,instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST,request.FILES,instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'The profile has been updated successfuly')
+            return redirect('user-profile')
+    else:
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+        user_form = UserUpdateForm(instance=request.user)
+    context = {'u_form':user_form, 'p_form': profile_form}
+    return render(request, 'users/profile_update.html', context)
 
 
 class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

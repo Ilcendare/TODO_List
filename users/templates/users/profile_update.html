@@ -1,0 +1,22 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-5 d-flex justify-content-center flex-wrap flex-column">
+        <h3>Update Profile Info</h3>
+        <form  method="post" enctype="multipart/form-data" class="d-flex flex-column">
+            {% csrf_token %}
+            {{u_form|crispy}}
+            {{p_form|crispy}}
+            <input type="submit" class="btn btn-primary align-self-center mt-3" value="Update" style="width: 100px;"></input>
+        </form>
+    </div>
+</div>
+<div class="row justify-content-center mt-4">
+    <div class="col d-flex justify-content-center">
+        <a class="btn btn-warning me-1" href="{% url 'password-reset' %}">Reset Password</a>
+    </div>
+</div>
+<div class="row mt-3 mb-4" style="height: 500px;"></div>
+
+{% endblock content %}

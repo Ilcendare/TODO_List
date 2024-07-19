@@ -37,6 +37,9 @@ urlpatterns = [
 
     path('profile/', views.user_profile , name='user-profile'),
 
+    path('profile-update/', views.user_profile_update , name='update-profile'),
+
+
     path('delete-user/<int:pk>/<str:title>',
         views.UserDeleteView.as_view(),
         name='delete-user'),

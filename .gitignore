@@ -163,3 +163,4 @@ cython_debug/
 #.idea/
 
 file.csv
+static/media/profile_pics/*

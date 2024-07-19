@@ -9,20 +9,20 @@
 {% if form_type == 'login' %}
     <div class="row text-center mt-3">
         <div class="col">
-            <a href="{% url 'password-reset' %}" class="text-decoration-none btn btn-outline-primary ms-2">Forogt your Password?</a>
+            <a href="{% url 'password-reset' %}" class="text-decoration-none btn btn-outline-primary ms-2">Forgot your Password?</a>
         </div>
     </div>
     <div class="row text-center mt-5">
         <div class="col">
-            <small>Haven't you signed up yet?</small>
-            <a href="{% url 'register' %}" class="text-decoration-none btn btn-outline-primary ms-2">Sign up here</a>
+            <small>Haven't you signed-up yet?</small>
+            <a href="{% url 'register' %}" class="text-decoration-none btn btn-primary ms-2">Sign-up Here</a>
         </div>
     </div>
 {% elif form_type == 'register' %}
     <div class="row text-center mt-5">
         <div class="col">
             <small>Already have an account?</small>
-            <a href="{% url 'login' %}" class="text-decoration-none btn btn-outline-primary ms-2">Login here</a>
+            <a href="{% url 'login' %}" class="text-decoration-none btn btn-primary ms-2">Login Here</a>
         </div>
     </div>
 {% endif %}

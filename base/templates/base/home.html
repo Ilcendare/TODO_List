@@ -5,8 +5,14 @@
             <div class="col input-group mb-5 mt-4">
                 <form class="input-group d-flex justify-content-center" action="{% url 'home-page' %}" method="get">
                         <span class="input-group-text" id="basic-addon1">Task title:</span>
-                        <input type="text" class="form-control" style="max-width: 500px;" placeholder="Type the task title you are searching" aria-label="task-title" aria-describedby="basic-addon1" name="query">
-                        <!-- TODO Add 'Order by' option to order tasks from oldest to newest or vice versa, or by title -->
+                        <input type="text" class="form-control" style="max-width: 400px;" placeholder="Search for a task" aria-label="task-title" aria-describedby="basic-addon1" name="query">
+                        <select class="form-select" style="max-width: 300px; margin-left: 50px;" aria-label="Default select example" name="task-order">
+                            <option value="0" selected>Select how to order your tasks:</option>
+                            <option value="1">By Date (newest to oldest)</option>
+                            <option value="2">By Date (oldest to newest)</option>
+                            <option value="3">By Title</option>
+                        </select>
+                        <button class="btn btn-primary">order</button>
                 </form>
             </div>
         </div>
