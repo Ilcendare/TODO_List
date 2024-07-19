@@ -3,6 +3,9 @@ from tasks.models import Task
 from django.views.generic import ListView
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.db.models.functions import Lower
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 #* Function Based View
 # def home_page(request):
@@ -22,22 +25,33 @@ class TaskListView(ListView):
         if not self.request.user.is_authenticated:
             context['tasks'] = None
             return context
-        query = self.request.GET.get('query') if self.request.GET.get('query') is not None else ''
-        tasks = Task.objects.filter(Q(owner=self.request.user) & 
-                                    Q(completed=False) & 
-                                    Q(title__icontains = query))
         
-        task_order = int(self.request.GET.get('task-order')) if self.request.GET.get('task-order') is not None else '0'
-        print(task_order)
+        query = self.request.GET.get('query') if self.request.GET.get('query') is not None else ''
+        task_order = int(self.request.GET.get('task-order')) if self.request.GET.get('task-order') is not None else 0
+        
+        if query != '' or task_order > 0:
+            tasks = Task.objects.filter(Q(owner=self.request.user) & Q(title__icontains = query))
+            
+            if task_order == 1:
+                tasks = tasks.order_by('-date_created')
+            elif task_order == 2:
+                tasks = tasks.order_by('date_created')
+            elif task_order == 3:
+                tasks = tasks.order_by(Lower('title'))
+            else:
+                tasks.order_by('completed','-date_created')
 
-        if task_order == 1:
-            tasks = tasks.order_by('-date_created')
-        elif task_order == 2:
-            tasks = tasks.order_by('date_created')
-        elif task_order == 3:
-            tasks = tasks.order_by('title')
+            self.request.session['query'] = query
+            self.request.session['tasks'] = json.dumps(list(tasks.values()), cls=DjangoJSONEncoder)
+        
+        elif 'tasks' in self.request.session:
+            tasks = json.loads(self.request.session.get('tasks'))
+            
         else:
-            tasks.order_by('completed','date_created')
+            tasks = Task.objects.filter(Q(owner=self.request.user))
+            tasks.order_by('completed','-date_created')
+            self.request.session['query'] = query
+            self.request.session['tasks'] = json.dumps(list(tasks.values()), cls=DjangoJSONEncoder)
 
         paginated = Paginator(tasks, 10)
         page_number = self.request.GET.get('page') #Get the requested page number from the URL

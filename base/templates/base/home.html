@@ -30,6 +30,7 @@
                     {% for task in tasks %}
                     <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#{{task.id}}" role="tab">{{task.title}}</a>
                     {% endfor %}
+                    <!-- TODO: Add a check mark in the end of completed tasks -->
                 </div>
                 {% if is_paginated %}
                     <div class="d-flex justify-content-evenly mt-3">
@@ -55,7 +56,12 @@
                             </div>
                             <div class="row justify-content-center mt-auto mb-4">
                                 <div class="col d-flex justify-content-md-center align-content-sm-center flex-wrap flex-sm-column flex-md-row">
-                                    <a class="btn btn-success mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'mark-complete' task.id %}">Check</a>
+                                    {% if task.completed == False  %}
+                                    <a class="btn btn-success mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'mark-complete' task.id %}">Check</a>                            
+                                    {% else %}
+                                    <a class="btn btn-warning mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'unmark-complete' task.id %}">Uncheck</a>
+                                    {% endif %}
+                                    <!-- <a class="btn btn-success mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'mark-complete' task.id %}">Check</a> -->
                                     <a class="btn btn-info mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'edit-task' task.id task.title %}?next={{request.path}}">Edit</a>
                                     <a class="btn btn-danger mb-sm-2" style="max-width: 100px; width: 100px;" href="{% url 'delete-task' task.id task.title %}?next={{request.path}}">Delete</a>
                                 </div>
