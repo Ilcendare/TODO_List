@@ -29,7 +29,7 @@ def LogoutUser(request):
 
 
 def user_profile(request):
-    tasks = Task.objects.filter(owner=request.user)
+    tasks = Task.objects.filter(owner=request.user).order_by('-completed')
     paginated = Paginator(tasks, 10)
     page_number = request.GET.get('page') #Get the requested page number from the URL
     page = paginated.get_page(page_number)

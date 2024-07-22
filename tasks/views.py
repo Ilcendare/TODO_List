@@ -1,5 +1,6 @@
 from os import write
 from timeit import repeat
+from urllib import response
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, UpdateView, DeleteView
@@ -16,6 +17,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     
     def form_valid(self, form):
         form.instance.owner = self.request.user
+        self.request.session['update'] = 1
         return super().form_valid(form)
 
 
@@ -26,6 +28,7 @@ class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         success_url = self.request.GET.get('next')
+        self.request.session['update'] = 1
         return success_url
 
     def form_valid(self, form):
@@ -50,6 +53,7 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         success_url = self.request.GET.get('next')
+        self.request.session['update'] = 1
         return success_url
 
 
@@ -57,6 +61,7 @@ def checkTask(request, pk):
     task = Task.objects.get(id=pk)
     task.completed = True
     task.save()
+    request.session['update'] = 1
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
@@ -64,6 +69,7 @@ def uncheckTask(request, pk):
     task = Task.objects.get(id=pk)
     task.completed = False
     task.save()
+    request.session['update'] = 1
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 

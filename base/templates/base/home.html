@@ -1,74 +1,103 @@
 {% extends "base/base.html" %}
 {% block content %}
+    <style>
+        .task-list {
+            display: flex;
+            flex-direction: row;
+            transition: 0.3s;
+        }
+
+        .task-list.active {
+            display: flex !important;
+            flex-direction: row !important;
+            transition: 0.3s;
+        }
+
+        .task-details {
+            display: none;
+        }
+
+        .task-details.active {
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .task-details .btn {
+            max-width: 100px; 
+            width: 100px;
+        }
+    </style>
     {% if user.is_authenticated == True  %}
-        <div class="row">
-            <div class="col input-group mb-5 mt-4">
-                <form class="input-group d-flex justify-content-center" action="{% url 'home-page' %}" method="get">
-                        <span class="input-group-text" id="basic-addon1">Task title:</span>
-                        <input type="text" class="form-control" style="max-width: 400px;" placeholder="Search for a task" aria-label="task-title" aria-describedby="basic-addon1" name="query">
-                        <select class="form-select" style="max-width: 300px; margin-left: 50px;" aria-label="Default select example" name="task-order">
-                            <option value="0" selected>Select how to order your tasks:</option>
-                            <option value="1">By Date (newest to oldest)</option>
-                            <option value="2">By Date (oldest to newest)</option>
-                            <option value="3">By Title</option>
+        <div class="row  mb-5 mt-4">
+            <div class="col">
+                <form class="d-flex flex-nowrap flex-column flex-md-row justify-content-center gap-2" action="{% url 'home-page' %}" method="get">
+                    <div class="input-group justify-content-center">
+                        <span class="input-group-text d-inline rounded-start-pill" id="basic-addon1"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control rounded-end-pill" style="max-width: 400px;" placeholder="Search for a task" aria-label="task-title" aria-describedby="basic-addon1" name="query">
+                    </div>
+                    <div class="input-group justify-content-center">
+                        <select class="form-select rounded-start-pill" style="max-width: 400px;" aria-label="Default select example" name="task-order">
+                                <!-- TODO: (JS) The selected property should be in the last selected option even after the page has been refreshed  -->
+                                <option value="0" selected>Default</option>
+                                <option value="1">By Date (newest to oldest)</option>
+                                <option value="2">By Date (oldest to newest)</option>
+                                <option value="3">By Title</option>
+                                <option value="4">By Completion</option>
                         </select>
-                        <button class="btn btn-primary">order</button>
+                        <button class="btn btn-primary rounded-end-pill">Search</button>
+                    </div>
                 </form>
             </div>
         </div>
-        <div class="row mt-3 mb-4 justify-content-center text-center nowrap">
-            <div class="col-7 me-md-5">
-                <h2>On-going Tasks</h2>
-            </div>
-            <div class="col-4">
-                <h2>Tasks Details</h2>
-            </div>
-        </div>
         <div class="row justify-content-center nowrap" role="tabpanel">
-            <div class="col-7 me-md-5">
+            <div class="col-12 col-ms-10 col-lg-8">
+                <h2 class="text-center mb-3">All Tasks</h2>
                 <div class="list-group" id="myList" role="tablist">
                     {% for task in tasks %}
-                    <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#{{task.id}}" role="tab">{{task.title}}</a>
+                    <a class="task-list list-group-item list-group-item-action" data-bs-toggle="list" href="#{{task.id}}" role="tab">
+                        <p>
+                            {% if task.completed == True %}
+                            <i class="bi bi-check-circle ms-2 me-3"></i>
+                            {% else %}
+                            <i class="bi bi-circle ms-2 me-3"></i>
+                            {% endif %}
+                        </p>
+                        <p>{{task.title}}</p>
+                    </a>
+                    <div class="border border-2 rounded-bottom-4 bg-body-secondary task-details tab-pane fade p-3" id="{{task.id}}" role="tabpanel">
+                        <div class="row">
+                            <div class="col m-2 text-center text-lg-start">
+                                <p class="text-start">{{task.description}}</p>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mt-auto">
+                            <div class="col d-flex justify-content-md-center align-content-center flex-wrap flex-column flex-md-row gap-3">
+                                {% if task.completed == False  %}
+                                <a class="btn btn-success rounded-pill" href="{% url 'mark-complete' task.id %}">Check</a>                            
+                                {% else %}
+                                <a class="btn btn-warning rounded-pill" href="{% url 'unmark-complete' task.id %}">Uncheck</a>
+                                {% endif %}
+                                <a class="btn btn-info rounded-pill" href="{% url 'edit-task' task.id task.title %}?next={% url 'home-page' %}">Edit</a>
+                                <a class="btn btn-danger rounded-pill" href="{% url 'delete-task' task.id task.title %}?next={% url 'home-page' %}">Delete</a>
+                            </div>
+                        </div>
+                    </div>
                     {% endfor %}
-                    <!-- TODO: Add a check mark in the end of completed tasks -->
                 </div>
                 {% if is_paginated %}
                     <div class="d-flex justify-content-evenly mt-3">
                         {% if tasks.has_previous %}
-                            <a class="btn btn-outline-primary bi bi-caret-left-fill" href="?page={{tasks.previous_page_number}}"></a>
+                            <a class="btn btn-outline-primary rounded-circle bi bi-caret-left-fill" href="?page={{tasks.previous_page_number}}"></a>
                         {% endif %}
                         {% if tasks.has_next %}
-                            <a class="btn btn-outline-primary bi bi-caret-right-fill" href="?page={{tasks.next_page_number}}"></a>
+                            <a class="btn btn-outline-primary rounded-circle bi bi-caret-right-fill" href="?page={{tasks.next_page_number}}"></a>
                         {% endif %}
                     </div>
                 {% endif %}
                 <div class="d-flex justify-content-center mt-4">
-                        <a class="btn btn-outline-primary" href="{% url 'create-task' %}">Create New Task</a>
+                        <a class="btn btn-outline-primary rounded-pill" href="{% url 'create-task' %}">Create New Task</a>
                 </div>
             </div>
-                <div class="col-4 border border-2 rounded-4 bg-body-secondary d-flex justify-content-evenly tab-content">
-                    {% for task in tasks %}
-                        <div class="tab-pane fade" id="{{task.id}}" role="tabpanel">
-                            <div class="row">
-                                <div class="col m-2">
-                                    <p class="text-start">{{task.description}}</p>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center mt-auto mb-4">
-                                <div class="col d-flex justify-content-md-center align-content-sm-center flex-wrap flex-sm-column flex-md-row">
-                                    {% if task.completed == False  %}
-                                    <a class="btn btn-success mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'mark-complete' task.id %}">Check</a>                            
-                                    {% else %}
-                                    <a class="btn btn-warning mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'unmark-complete' task.id %}">Uncheck</a>
-                                    {% endif %}
-                                    <!-- <a class="btn btn-success mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'mark-complete' task.id %}">Check</a> -->
-                                    <a class="btn btn-info mb-sm-2 me-lg-2" style="max-width: 100px; width: 100px;" href="{% url 'edit-task' task.id task.title %}?next={{request.path}}">Edit</a>
-                                    <a class="btn btn-danger mb-sm-2" style="max-width: 100px; width: 100px;" href="{% url 'delete-task' task.id task.title %}?next={{request.path}}">Delete</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
         </div>
         <div class="row mt-3 mb-4" style="height: 200px;"></div>
     {% else %}
